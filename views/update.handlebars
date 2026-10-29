@@ -1,0 +1,15 @@
+<h1>Update Order {{order.orderId}}</h1>
+{{#if order}}
+<form action="/update-status" method="post">
+    <input type="hidden" name="orderId" value="{{order.orderId}}">
+    New Status: <select name="status">
+        <option value="Received">Received</option>
+        <option value="Washing">Washing</option>
+        <option value="Ready">Ready</option>
+        <option value="Delivered">Delivered</option>
+    </select>
+    <button type="submit">Update</button>
+</form>
+{{else}}
+<p>Order not found</p>
+{{/if}}
