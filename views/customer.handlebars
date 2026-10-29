@@ -1,0 +1,9 @@
+<h1>Search results</h1>
+{{#if customer}}
+<p>Name: {{customer.name}} Orders:</p>
+{{#each customerOrders}}
+<li>{{orderId}} {{orderDate}} {{status}} {{total}} QAR</li>
+{{/each}}
+{{else}}
+<p>Customer not found</p>
+{{/if}}
