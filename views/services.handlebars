@@ -1,0 +1,17 @@
+<h1>Laundry Services</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Service</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each services}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{price}}/{{unit}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
