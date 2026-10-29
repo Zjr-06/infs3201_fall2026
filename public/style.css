@@ -1,0 +1,24 @@
+nav {
+    border-bottom: 1px solid black;
+}
+table { 
+    border-collapse: collapse; 
+}
+th, td { 
+    padding: 6px 12px; 
+    border: 2px solid #ccc; 
+}
+.Received {
+    background-color: rgb(255, 126, 126);
+}
+.Washing {
+    background-color: #fcfc7a;
+}
+.Ready {
+    background-color: rgb(125, 125, 255);
+}
+.Delivered {
+    background-color: rgb(110, 255, 110);
+}
+
+
