@@ -1,7 +1,11 @@
 import * as persistence from "./persistence.js"
 
+const MINIMUM_ORDER_CHARGE = Number(process.env.MINIMUM_ORDER_CHARGE) || 0
+const FREE_DELIVERY_THRESHOLD = Number(process.env.FREE_DELIVERY_THRESHOLD) || 0
+const DELIVERY_CHARGE = Number(process.env.DELIVERY_CHARGE) || 0
+
 /**
- * Reads all services from services.json
+ * Reads all services from the database
  * @returns {Array<Object>} services 
  */
 export async function getServices() {
@@ -10,8 +14,17 @@ export async function getServices() {
 }
 
 /**
+ * Reads all orders from the database
+ * @returns {Array<Object>} orders 
+ */
+export async function getOrders() {
+    let orders = await persistence.getOrders()
+    return orders
+}
+
+/**
  * Checks if the service exists
-* @param {number} id - the id of the service
+ * @param {String} id - the id of the service
  * @returns {object} service
  */
 export async function checkService(id) {
@@ -20,7 +33,7 @@ export async function checkService(id) {
 
 /**
  * Checks if the customer exists
- * @param {number} id - the id of the customer
+ * @param {String} id - the id of the customer
  * @returns {object} customer 
  */
 export async function checkCustomer(id) {
@@ -29,7 +42,7 @@ export async function checkCustomer(id) {
 
 /**
  * Checks if the order exists
- * @param {number} id - the id of the order
+ * @param {String} id - the id of the order
  * @returns {object} order 
  */
 export async function checkOrder(id) {
@@ -38,7 +51,7 @@ export async function checkOrder(id) {
 
 /**
  * Reads all the customer's orders
- * @param {number} id - the id of the customer
+ * @param {String} id - the id of the customer
  * @returns {Array<Object>} orders
  */
 export async function getCustomerOrders(id) {
@@ -56,11 +69,11 @@ export async function getTotal(order) {
         let service = await checkService(item.serviceId)
         total += service.price * item.quantity
     }
-    if (total < Number(process.env.MINIMUM_ORDER_CHARGE)){
-        total = Number(process.env.MINIMUM_ORDER_CHARGE)
+    if (total < MINIMUM_ORDER_CHARGE){
+        total = MINIMUM_ORDER_CHARGE
     }
-    if (total < Number(process.env.FREE_DELIVERY_THRESHOLD)){
-        total += Number(process.env.DELIVERY_CHARGE)
+    if (total < FREE_DELIVERY_THRESHOLD){
+        total += DELIVERY_CHARGE
     }
     return total.toFixed(2)
 }
@@ -77,11 +90,11 @@ export async function getSubTotal(order) {
         total += service.price * item.quantity
     }
     result.subtotal = total.toFixed(2)
-    if (total < Number(process.env.MINIMUM_ORDER_CHARGE)){
-        result.adjustment = Number(process.env.MINIMUM_ORDER_CHARGE) - total.toFixed(2)
+    if (total < MINIMUM_ORDER_CHARGE){
+        result.adjustment = MINIMUM_ORDER_CHARGE - total.toFixed(2)
     }
-    if (total < Number(process.env.FREE_DELIVERY_THRESHOLD)){
-        result.delivery = Number(process.env.DELIVERY_CHARGE)
+    if (total < FREE_DELIVERY_THRESHOLD){
+        result.delivery = DELIVERY_CHARGE
     }
     return result
 }
@@ -104,7 +117,7 @@ export async function statusUpdate(order, newStatus) {
         accepted = true
     }
     if(accepted){
-        await persistence.updateOrder(order,newStatus)
+        await persistence.updateOrder(order.orderId,newStatus)
         return true
     }
     else{
@@ -131,7 +144,7 @@ async function newOrderId() {
 
 /**
  * Creates a new order
- * @param {number} id - the id of the customer
+ * @param {String} id - the id of the customer
  * @param {Array<Object>} items - the items of the order
  * @returns {object} the new order
  */
